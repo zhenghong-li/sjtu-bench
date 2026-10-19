@@ -19,3 +19,5 @@ self-bench/mine/
 .DS_Store
 Thumbs.db
 *.log
+
+.dsh-office-*/
