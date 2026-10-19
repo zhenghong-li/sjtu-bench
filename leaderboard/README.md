@@ -37,6 +37,8 @@
 
 ## 如何生成
 
+> 脚本只是方便；不想装 Node 也可以直接按上面的 JSON 模板手写（字段不能多、不能少）。
+
 ```powershell
 # 先分别跑 cold / warm，并各自生成 summary.json
 node scripts/score-run.mjs runs/cold/result.json --run-type cold
