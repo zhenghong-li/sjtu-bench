@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SJTU-Bench anonymous leaderboard submission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "agentLabel",
+    "date",
+    "tasksTotal",
+    "tasksPassed",
+    "scoreAvg",
+    "elapsedSeconds",
+    "manualSeconds",
+    "timeSavedSeconds",
+    "levels",
+    "consent"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "runId": { "type": "string", "pattern": "^[0-9a-fA-F-]{36}$" },
+    "agentLabel": { "type": "string", "minLength": 1, "maxLength": 40, "not": { "pattern": "@|https?://" } },
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "tasksTotal": { "type": "integer", "minimum": 15, "maximum": 100 },
+    "tasksPassed": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "scoreAvg": { "type": "number", "minimum": 0, "maximum": 100 },
+    "elapsedSeconds": { "type": "number", "minimum": 0 },
+    "manualSeconds": { "type": "number", "minimum": 0 },
+    "timeSavedSeconds": { "type": "number" },
+    "levels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["L1", "L2", "L3", "L4"],
+      "properties": {
+        "L1": { "$ref": "#/definitions/level" },
+        "L2": { "$ref": "#/definitions/level" },
+        "L3": { "$ref": "#/definitions/level" },
+        "L4": { "$ref": "#/definitions/level" }
+      }
+    },
+    "consent": { "const": true }
+  },
+  "definitions": {
+    "level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passed", "total"],
+      "properties": {
+        "passed": { "type": "integer", "minimum": 0 },
+        "total": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+id: L4-02-workflow-design
+title: 关键词订阅工作流设计
+level: L4
+manualMinutes: 10
+safety: read-only
+tools:
+  - notice_sources
+  - services_catalog
+prompt: |
+  为我设计一个“校园关键词订阅 + 每日简报”的工作流（不需要真的创建定时任务）：
+  包含：关注的 5 个关键词、对应的数据源（通知/水源/公众号/邮箱/活动）、
+  每天/每周运行时间、输出格式、去重与失败处理、隐私边界（哪些数据不能离开本机）。
+  要求方案具体到可以直接交给一个 agent 执行。
+evidence:
+  - 关键词/数据源映射
+  - 调度与输出格式
+  - 去重/失败处理/隐私边界
+judge:
+  passScore: 60
+  criteria:
+    - 5 个关键词与数据源合理匹配
+    - 调度与输出格式可执行
+    - 包含去重与失败处理
+    - 明确隐私边界
+    - 不是泛泛而谈
+notes: |
+  纯设计任务，不实际执行写操作。

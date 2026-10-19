@@ -1,0 +1,24 @@
+id: L1-02-notice-extract
+title: 教务通知关键信息
+level: L1
+manualMinutes: 3
+safety: read-only
+tools:
+  - notice_list
+  - notice_get
+prompt: |
+  在教务处最近 7 天的通知中任选一条（优先与你专业/年级相关的），输出：
+  标题、发布日期、关键时间/截止时间（若有）、地点（若有）、原文链接，并摘录 1–2 句原文作为依据。
+  如果最近 7 天没有通知，明确说明并改为最近 30 天。
+evidence:
+  - 标题、日期、链接
+  - 至少 1 句原文摘录
+judge:
+  passScore: 60
+  criteria:
+    - 来源是教务处等真实校园通知
+    - 标题/日期/链接完整
+    - 摘录与原文一致，关键时间信息正确
+    - 没有编造通知内容
+notes: |
+  notice_list + notice_get；如列表无数据可用 notice_search。

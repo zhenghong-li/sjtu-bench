@@ -1,0 +1,22 @@
+id: L1-01-timetable
+title: 今日课表
+level: L1
+manualMinutes: 2
+safety: read-only
+tools:
+  - timetable_get
+  - calendar_events
+prompt: |
+  读取我今天的课表。按开始时间排序，列出每门课的：课程名称、上课时间（节次/起止时间）、教室、教师。
+  如果今天没有课，明确说明“今天无课”。不要读取或输出与课表无关的个人信息。
+evidence:
+  - 课程数量与工具返回一致
+  - 每门课的时间、教室、教师
+judge:
+  passScore: 60
+  criteria:
+    - 覆盖今天全部课程（数量正确）
+    - 时间、教室、教师与工具返回一致
+    - 没有编造未返回的信息
+notes: |
+  主工具 timetable_get；可用 calendar_events 交叉验证。

@@ -1,0 +1,76 @@
+name: 新任务提案
+description: 提一个新的 SJTU-Bench 校园任务（会先经过隐私与可行性审查）
+title: "[task] "
+labels: ["task", "needs-review"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢贡献！请确保任务：对所有交大学生可完成、只读或仅预填、不要求上传个人数据。
+        详细格式见 `tasks/README.md`。
+  - type: input
+    id: title
+    attributes:
+      label: 任务标题
+      placeholder: 例如：查本周空闲时间
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: 难度级别
+      options:
+        - L1（单工具，2 分钟内）
+        - L2（跨工具/跨源）
+        - L3（多步 + 人工确认）
+        - L4（综合/工作流设计）
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: 任务 prompt
+      description: 直接写给 agent 的话；不要包含真实姓名/学号/邮箱
+      placeholder: 读取我今天的课表，按时间排序列出……
+    validations:
+      required: true
+  - type: input
+    id: tools
+    attributes:
+      label: 允许的工具（逗号分隔）
+      placeholder: timetable_get, calendar_events
+  - type: input
+    id: minutes
+    attributes:
+      label: 人工完成预计耗时（分钟）
+      placeholder: "5"
+    validations:
+      required: true
+  - type: dropdown
+    id: safety
+    attributes:
+      label: 安全级别
+      options:
+        - read-only（只读）
+        - prefill（只预填/打开页面，不提交）
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: LLM 评分标准（每条一行）
+      placeholder: |
+        覆盖今天全部课程
+        时间/教室/教师与工具返回一致
+        没有编造未返回的信息
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 隐私确认
+      options:
+        - label: 任务不要求收集/上传姓名、学号、邮箱、Cookie、截图等个人数据
+          required: true
+        - label: 任务不涉及自动提交、支付、报名、发邮件
+          required: true

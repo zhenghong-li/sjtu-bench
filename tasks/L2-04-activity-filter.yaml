@@ -1,0 +1,25 @@
+id: L2-04-activity-filter
+title: 活动筛选与冲突检查
+level: L2
+manualMinutes: 5
+safety: read-only
+tools:
+  - activity_list
+  - activity_detail
+  - calendar_events
+prompt: |
+  查看最近的第二课堂/讲座活动，筛选出 3 个仍可报名、且时间不与我的日历冲突的活动：
+  输出名称、时间、地点、报名截止时间、报名方式。
+  只做筛选与建议，不要提交报名、不要填写任何表单。
+evidence:
+  - 3 个活动及筛选依据
+  - 与日历冲突检查结论
+judge:
+  passScore: 60
+  criteria:
+    - 3 个活动来自活动平台且时间可报名
+    - 与日历冲突检查有明确结论
+    - 没有提交报名
+    - 信息与活动详情一致
+notes: |
+  如果可报名活动不足 3 个，按实际数量输出并说明。

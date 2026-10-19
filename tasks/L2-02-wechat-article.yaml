@@ -1,0 +1,26 @@
+id: L2-02-wechat-article
+title: 公众号文章搜索与摘要
+level: L2
+manualMinutes: 6
+safety: read-only
+tools:
+  - wechat_search
+  - wechat_resolve_url
+  - wechat_read_article
+prompt: |
+  搜索微信公众号中与「奖学金」相关的最近文章，选 2 篇，读取正文后输出：
+  标题、公众号名、发布时间、3 条要点、原文链接。
+  如果搜狗结果链接不能直接读取，先用解析工具换成 mp.weixin.qq.com 直链再读。
+  不要输出文章中的个人隐私信息（手机号/身份证号/二维码等）。
+evidence:
+  - 2 篇文章的标题/公众号/时间/链接
+  - 每篇 3 条要点
+judge:
+  passScore: 60
+  criteria:
+    - 2 篇均为真实公众号文章且可追溯链接
+    - 发布时间/公众号名完整
+    - 要点来自正文，不是只看标题猜测
+    - 没有编造文章内容
+notes: |
+  搜狗结果可能被反爬；失败时可用往期文章或换关键词，需在回答中说明。

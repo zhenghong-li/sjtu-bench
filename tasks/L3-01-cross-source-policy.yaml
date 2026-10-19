@@ -1,0 +1,32 @@
+id: L3-01-cross-source-policy
+title: 跨源政策核对
+level: L3
+manualMinutes: 12
+safety: read-only
+tools:
+  - search_all
+  - notice_search
+  - notice_get
+  - shuiyuan_search
+  - shuiyuan_topic
+  - wechat_search
+  - wechat_read_article
+prompt: |
+  选一个最近的校园政策/通知（例如考试安排、选课、报销、奖学金），分别从：
+  ① 校园官方通知 ② 水源讨论 ③ 微信公众号 找对应信息；
+  做成三方对照：一致点、差异点、各自来源链接；
+  最后给出你的判断：以哪个来源为准、为什么。
+  不要仅凭搜索摘要下结论，关键信息至少读一处原文。
+evidence:
+  - 三方来源链接
+  - 一致点/差异点对照
+  - 结论与理由
+judge:
+  passScore: 60
+  criteria:
+    - 三个来源都真实存在且与同一主题相关
+    - 对照具体，不是泛泛而谈
+    - 结论有原文依据
+    - 没有编造来源或内容
+notes: |
+  找不到三方时至少官方+一个讨论源，并说明原因。

@@ -1,0 +1,26 @@
+id: L2-01-week-deadlines
+title: 一周考试/DDL 汇总
+level: L2
+manualMinutes: 8
+safety: read-only
+tools:
+  - calendar_events
+  - timetable_get
+  - notice_list
+prompt: |
+  汇总我未来 7 天的考试、作业 DDL、重要校园事项：
+  结合我的日历事件、课表和最近通知，输出按日期排序的清单；
+  每条标注：日期/时间、事项、来源（calendar / notice / timetable）。
+  不要遗漏日历中明确标注的 DDL；没有则说明。
+evidence:
+  - 未来 7 天清单（日期/事项/来源）
+  - 使用的数据源
+judge:
+  passScore: 60
+  criteria:
+    - 覆盖日历中的未来 7 天事件
+    - 每条都有日期和来源标注
+    - 没有把普通课程误标为 DDL
+    - 未编造事件
+notes: |
+  允许合并工具输出；重点是“不漏项 + 来源可追溯”。

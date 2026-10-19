@@ -1,0 +1,30 @@
+id: L4-01-daily-brief
+title: 今日校园简报
+level: L4
+manualMinutes: 10
+safety: read-only
+tools:
+  - timetable_get
+  - calendar_events
+  - notice_list
+  - shuiyuan_hot
+prompt: |
+  生成一份“今日校园简报”，包含 4 个部分：
+  1) 今日课程（时间/教室）
+  2) 未来 48 小时 DDL/考试
+  3) 最近 24 小时校园通知（最多 3 条，带链接）
+  4) 水源今日热帖 Top 3（标题+链接）
+  要求：按重要性排序，标注来源，控制篇幅在 400 字以内；不要输出敏感个人信息。
+evidence:
+  - 四个部分齐全
+  - 来源链接
+judge:
+  passScore: 60
+  criteria:
+    - 四个部分齐全且有真实数据
+    - 来源可追溯
+    - 有优先级/摘要，不是简单堆砌
+    - 400 字以内（可略超）
+    - 无敏感信息
+notes: |
+  综合任务；允许取舍，但需说明“暂无数据”。

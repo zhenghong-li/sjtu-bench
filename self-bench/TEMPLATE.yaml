@@ -1,0 +1,20 @@
+id: SELF-01-example
+title: 我的特化任务（示例）
+level: SELF
+manualMinutes: 5
+safety: read-only
+tools:
+  - pan_list
+prompt: |
+  在这里写你的任务，例如：在云盘里找到「我的项目」目录并列出最近修改的 3 个文件。
+evidence:
+  - 回答中应包含哪些信息
+  - 来源/工具调用摘要
+judge:
+  passScore: 60
+  criteria:
+    - 信息完整
+    - 来源可核查
+    - 没有编造
+notes: |
+  复制到 self-bench/mine/ 后修改；不要提交到仓库。

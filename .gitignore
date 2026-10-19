@@ -1,0 +1,21 @@
+# 本地运行产物：绝不允许提交
+runs/
+evidence/
+answers/
+screenshots/
+*.local.json
+submission.local.json
+
+# 依赖/环境
+node_modules/
+.env
+.env.*
+dist/
+
+# 个人的 self-bench 任务
+self-bench/mine/
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+*.log
