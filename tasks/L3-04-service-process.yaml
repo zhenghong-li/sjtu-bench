@@ -2,6 +2,8 @@ id: L3-04-service-process
 title: 交我办办事流程规划
 level: L3
 manualMinutes: 8
+referenceSeconds: 55
+timeLimitSeconds: 83
 safety: read-only
 tools:
   - services_search

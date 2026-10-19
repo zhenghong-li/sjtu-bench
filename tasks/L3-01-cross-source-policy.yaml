@@ -2,6 +2,8 @@ id: L3-01-cross-source-policy
 title: 跨源政策核对
 level: L3
 manualMinutes: 12
+referenceSeconds: 70
+timeLimitSeconds: 105
 safety: read-only
 tools:
   - search_all

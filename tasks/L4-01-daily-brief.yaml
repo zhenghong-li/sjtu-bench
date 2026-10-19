@@ -2,6 +2,8 @@ id: L4-01-daily-brief
 title: 今日校园简报
 level: L4
 manualMinutes: 10
+referenceSeconds: 60
+timeLimitSeconds: 90
 safety: read-only
 tools:
   - timetable_get

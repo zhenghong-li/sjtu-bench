@@ -2,6 +2,8 @@ id: L1-04-service-find
 title: 交我办服务搜索
 level: L1
 manualMinutes: 2
+referenceSeconds: 14
+timeLimitSeconds: 21
 safety: read-only
 tools:
   - services_search

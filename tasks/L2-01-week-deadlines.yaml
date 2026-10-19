@@ -2,6 +2,8 @@ id: L2-01-week-deadlines
 title: 一周考试/DDL 汇总
 level: L2
 manualMinutes: 8
+referenceSeconds: 45
+timeLimitSeconds: 68
 safety: read-only
 tools:
   - calendar_events

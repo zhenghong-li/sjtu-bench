@@ -6,7 +6,7 @@ SJTU-Bench 的底线：**你的校园数据只属于你。仓库、评分、排�
 
 | 数据 | 位置 | 是否上传 |
 |---|---|---|
-| jAccount 登录态 / Cookie / token | 你本机 Chrome profile（由 sjtu-mcp 管理） | ❌ 永不 |
+| jAccount 登录态 / Cookie / token | 你本机 Chrome profile（由你选择的 agent/浏览器管理） | ❌ 永不 |
 | 课表、邮件、云盘、发票、活动、ZIRC 内容 | 你本机 | ❌ 永不 |
 | 任务证据（截图、原文、工具输出） | 本机 `runs/<runId>/evidence/` | ❌ 永不 |
 | LLM 评分过程/理由 | 本机 `runs/<runId>/result.json` | ❌ 永不 |
@@ -22,13 +22,14 @@ SJTU-Bench 的底线：**你的校园数据只属于你。仓库、评分、排�
 
 ```text
 schemaVersion, runId（随机 UUID）, agentLabel（你自己起的名字，不含真名）,
-date, tasksTotal, tasksPassed, scoreAvg, elapsedSeconds, manualSeconds,
-timeSavedSeconds, levels, consent
+date, benchmarkVersion, cold{...}, warm{...}, timeSavedSeconds, speedup, consent
 ```
+
+每个 `cold`/`warm` 块只含：`tasksTotal, tasksPassed, scoreAvg, elapsedSeconds, timedOut`。
 
 **绝不包含**：姓名、学号、jAccount、邮箱、手机号、Cookie/token、课程名、邮件内容、发票号、金额明细、截图、任务回答、IP、设备信息。
 
-`scripts/score-run.mjs --submission` 只会从结果中提取上述数字，并自动生成随机 `runId`；你可以先打开 `submission.json` 检查再决定是否提交。
+`scripts/make-submission.mjs` 只会从两轮 summary 中提取上述数字，并自动生成随机 `runId`；你可以先打开 `submission.json` 检查再决定是否提交。
 
 ## 3. 证据可能含个人数据
 

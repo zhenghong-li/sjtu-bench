@@ -16,7 +16,7 @@ copy self-bench/TEMPLATE.yaml self-bench/mine/my-task.yaml
 ```
 
 2. 修改 `id/title/prompt/tools/judge.criteria/manualMinutes`；
-3. 让 agent 按 [skills/sjtubench/SKILL.md](../skills/sjtubench/SKILL.md) 的流程跑单个任务；
+3. 让 agent 按 [PROTOCOL.md](../PROTOCOL.md) 的流程跑单个任务；
 4. 评分后自己留存，不上传。
 
 ## 示例方向

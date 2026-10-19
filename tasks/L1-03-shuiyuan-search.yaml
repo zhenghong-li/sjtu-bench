@@ -2,6 +2,8 @@ id: L1-03-shuiyuan-search
 title: 水源社区搜索
 level: L1
 manualMinutes: 3
+referenceSeconds: 18
+timeLimitSeconds: 27
 safety: read-only
 tools:
   - shuiyuan_search

@@ -2,6 +2,8 @@ id: L3-02-pan-find
 title: 云盘查找文件
 level: L3
 manualMinutes: 8
+referenceSeconds: 22
+timeLimitSeconds: 33
 safety: read-only
 tools:
   - pan_info

@@ -12,18 +12,30 @@ const ALLOWED_KEYS = [
   'runId',
   'agentLabel',
   'date',
-  'tasksTotal',
-  'tasksPassed',
-  'scoreAvg',
-  'elapsedSeconds',
-  'manualSeconds',
+  'benchmarkVersion',
+  'cold',
+  'warm',
   'timeSavedSeconds',
-  'levels',
+  'speedup',
   'consent',
 ];
+const BLOCK_KEYS = ['tasksTotal', 'tasksPassed', 'scoreAvg', 'elapsedSeconds', 'timedOut'];
 
 function fail(file, message) {
   throw new Error(`${file}: ${message}`);
+}
+
+function validBlock(file, block, name) {
+  if (!block || typeof block !== 'object') fail(file, `${name} 缺失`);
+  for (const key of BLOCK_KEYS) {
+    if (block[key] === undefined) fail(file, `${name}.${key} 缺失`);
+  }
+  for (const key of ['tasksTotal', 'tasksPassed', 'timedOut']) {
+    if (!Number.isInteger(block[key]) || block[key] < 0) fail(file, `${name}.${key} 无效`);
+  }
+  for (const key of ['scoreAvg', 'elapsedSeconds']) {
+    if (typeof block[key] !== 'number' || block[key] < 0) fail(file, `${name}.${key} 无效`);
+  }
 }
 
 function loadSubmissions() {
@@ -40,29 +52,24 @@ function loadSubmissions() {
       continue;
     }
     try {
+      if (data.schemaVersion !== 2) fail(file, '只接受 schemaVersion 2（cold/warm 格式）');
       for (const key of Object.keys(data)) {
         if (!ALLOWED_KEYS.includes(key)) fail(file, `包含不允许的字段 ${key}`);
       }
       for (const key of ALLOWED_KEYS) {
         if (data[key] === undefined) fail(file, `缺少字段 ${key}`);
       }
-      if (data.schemaVersion !== 1) fail(file, 'schemaVersion 必须为 1');
+      if (data.benchmarkVersion !== 'v2') fail(file, 'benchmarkVersion 必须为 v2');
       if (data.consent !== true) fail(file, 'consent 必须为 true');
       if (!/^[0-9a-fA-F-]{36}$/.test(String(data.runId))) fail(file, 'runId 不是 UUID');
       if (typeof data.agentLabel !== 'string' || !data.agentLabel.trim()) fail(file, 'agentLabel 无效');
       if (/@|https?:\/\//i.test(data.agentLabel)) fail(file, 'agentLabel 不能含邮箱/网址');
       if (data.agentLabel.length > 40) fail(file, 'agentLabel 过长');
-      for (const key of ['tasksTotal', 'tasksPassed', 'elapsedSeconds', 'manualSeconds']) {
-        if (typeof data[key] !== 'number' || data[key] < 0) fail(file, `${key} 无效`);
-      }
-      for (const key of ['scoreAvg', 'timeSavedSeconds']) {
-        if (typeof data[key] !== 'number') fail(file, `${key} 无效`);
-      }
-      for (const level of ['L1', 'L2', 'L3', 'L4']) {
-        const item = data.levels?.[level];
-        if (!item || typeof item.passed !== 'number' || typeof item.total !== 'number') {
-          fail(file, `levels.${level} 无效`);
-        }
+      validBlock(file, data.cold, 'cold');
+      validBlock(file, data.warm, 'warm');
+      if (typeof data.timeSavedSeconds !== 'number') fail(file, 'timeSavedSeconds 无效');
+      if (data.speedup !== null && (typeof data.speedup !== 'number' || data.speedup < 0)) {
+        fail(file, 'speedup 无效');
       }
       rows.push(data);
     } catch (error) {
@@ -78,20 +85,20 @@ function escapeCell(value) {
 
 const rows = loadSubmissions().sort((a, b) => {
   if (b.timeSavedSeconds !== a.timeSavedSeconds) return b.timeSavedSeconds - a.timeSavedSeconds;
-  if (b.scoreAvg !== a.scoreAvg) return b.scoreAvg - a.scoreAvg;
-  return a.elapsedSeconds - b.elapsedSeconds;
+  if ((b.speedup ?? 0) !== (a.speedup ?? 0)) return (b.speedup ?? 0) - (a.speedup ?? 0);
+  return b.warm.scoreAvg - a.warm.scoreAvg;
 });
 
 const table = [
-  '| # | Agent | 得分 | 通过 | 用时 | 净节省 | 日期 |',
-  '|---|-------|------|------|------|--------|------|',
+  '| # | Agent | Cold 通过 | Cold 用时 | Warm 通过 | Warm 用时 | 提速 | 日期 |',
+  '|---|-------|-----------|-----------|-----------|-----------|------|------|',
 ];
 if (rows.length === 0) {
-  table.push('| — | 暂无提交，等你来 | — | — | — | — | — |');
+  table.push('| — | 暂无提交，等你来 | — | — | — | — | — | — |');
 } else {
   rows.slice(0, 50).forEach((row, index) => {
     table.push(
-      `| ${index + 1} | ${escapeCell(row.agentLabel)} | ${row.scoreAvg.toFixed(1)} | ${row.tasksPassed}/${row.tasksTotal} | ${Math.round(row.elapsedSeconds)}s | ${Math.round(row.timeSavedSeconds)}s | ${escapeCell(row.date)} |`,
+      `| ${index + 1} | ${escapeCell(row.agentLabel)} | ${row.cold.tasksPassed}/${row.cold.tasksTotal} | ${Math.round(row.cold.elapsedSeconds)}s | ${row.warm.tasksPassed}/${row.warm.tasksTotal} | ${Math.round(row.warm.elapsedSeconds)}s | ${row.speedup ? row.speedup + 'x' : '—'} | ${escapeCell(row.date)} |`,
     );
   });
 }

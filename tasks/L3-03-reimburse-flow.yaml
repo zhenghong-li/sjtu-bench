@@ -2,6 +2,8 @@ id: L3-03-reimburse-flow
 title: AI 报销流程演练（预填可选）
 level: L3
 manualMinutes: 10
+referenceSeconds: 48
+timeLimitSeconds: 72
 safety: prefill
 tools:
   - reimburse_prefill

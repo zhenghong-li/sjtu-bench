@@ -2,6 +2,8 @@ id: L4-02-workflow-design
 title: 关键词订阅工作流设计
 level: L4
 manualMinutes: 10
+referenceSeconds: 45
+timeLimitSeconds: 68
 safety: read-only
 tools:
   - notice_sources

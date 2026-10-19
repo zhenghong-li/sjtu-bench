@@ -5,12 +5,11 @@ import YAML from 'yaml';
 
 const args = process.argv.slice(2);
 const resultPath = args.find((arg) => !arg.startsWith('--'));
-const wantsSubmission = args.includes('--submission');
-const agentIndex = args.indexOf('--agent');
-const agentLabel = agentIndex >= 0 ? args[agentIndex + 1] ?? '' : 'unknown';
+const runTypeIndex = args.indexOf('--run-type');
+const runTypeArg = runTypeIndex >= 0 ? args[runTypeIndex + 1] : undefined;
 
 if (!resultPath) {
-  console.error('用法：node scripts/score-run.mjs <runs/xxx/result.json> [--submission --agent "你的 agent 名字"]');
+  console.error('用法：node scripts/score-run.mjs <runs/xxx/result.json> [--run-type cold|warm]');
   process.exit(1);
 }
 if (!fs.existsSync(resultPath)) {
@@ -18,22 +17,23 @@ if (!fs.existsSync(resultPath)) {
   process.exit(1);
 }
 
-const tasksDir = path.resolve('tasks');
+const result = JSON.parse(fs.readFileSync(resultPath, 'utf8'));
+const runType = runTypeArg ?? result.runType ?? 'cold';
+if (!['cold', 'warm'].includes(runType)) {
+  console.error('runType 必须是 cold 或 warm');
+  process.exit(1);
+}
+
 const taskMeta = new Map();
+const tasksDir = path.resolve('tasks');
 for (const file of fs.readdirSync(tasksDir).filter((name) => name.endsWith('.yaml'))) {
   const task = YAML.parse(fs.readFileSync(path.join(tasksDir, file), 'utf8'));
   taskMeta.set(task.id, task);
 }
 
-const result = JSON.parse(fs.readFileSync(resultPath, 'utf8'));
-if (!Array.isArray(result.tasks) || result.tasks.length === 0) {
-  console.error('result.json 缺少 tasks 数组');
-  process.exit(1);
-}
-
 const seen = new Set();
 const rows = [];
-for (const entry of result.tasks) {
+for (const entry of result.tasks ?? []) {
   const meta = taskMeta.get(entry.id);
   if (!meta) {
     console.warn(`忽略未知任务：${entry.id}`);
@@ -46,6 +46,7 @@ for (const entry of result.tasks) {
   seen.add(entry.id);
   const score = Number(entry.score);
   const seconds = Number(entry.seconds);
+  const timeout = Boolean(entry.timeout);
   if (!Number.isFinite(score) || score < 0 || score > 100) {
     console.error(`任务 ${entry.id} 分数无效：${entry.score}`);
     process.exit(1);
@@ -54,85 +55,69 @@ for (const entry of result.tasks) {
     console.error(`任务 ${entry.id} 用时无效：${entry.seconds}`);
     process.exit(1);
   }
+  const passScore = Number(meta.judge?.passScore ?? 60);
+  const timeLimitSeconds = Number(meta.timeLimitSeconds);
+  if (!Number.isFinite(timeLimitSeconds) || timeLimitSeconds <= 0) {
+    console.error(`任务 ${entry.id} 缺少 timeLimitSeconds，请检查任务 YAML`);
+    process.exit(1);
+  }
+  const pass = !timeout && score >= passScore && seconds <= timeLimitSeconds;
   rows.push({
     id: entry.id,
     level: meta.level,
     score: Math.round(score),
-    pass: Boolean(entry.pass),
     seconds,
-    manualSeconds: Math.round(Number(meta.manualMinutes) * 60),
+    timeLimitSeconds,
+    timeout,
+    pass,
     judgeMode: entry.judgeMode ?? 'separate',
+    reasons: Array.isArray(entry.reasons) ? entry.reasons : [],
   });
 }
 
-if (rows.length < taskMeta.size) {
-  console.warn(`注意：只记录了 ${rows.length}/${taskMeta.size} 个任务；未记录的任务按未通过处理。`);
-}
 for (const [id, meta] of taskMeta) {
-  if (!seen.has(id)) rows.push({ id, level: meta.level, score: 0, pass: false, seconds: 0, manualSeconds: 0, judgeMode: 'missing' });
+  if (!seen.has(id)) {
+    rows.push({
+      id,
+      level: meta.level,
+      score: 0,
+      seconds: 0,
+      timeLimitSeconds: Number(meta.timeLimitSeconds),
+      timeout: true,
+      pass: false,
+      judgeMode: 'missing',
+      reasons: [],
+    });
+  }
 }
 
 const tasksPassed = rows.filter((row) => row.pass).length;
 const scoreAvg = rows.reduce((sum, row) => sum + row.score, 0) / rows.length;
 const elapsedSeconds = rows.reduce((sum, row) => sum + row.seconds, 0);
-const manualSeconds = rows.filter((row) => row.pass).reduce((sum, row) => sum + row.manualSeconds, 0);
-const timeSavedSeconds = manualSeconds - elapsedSeconds;
-const levels = {};
-for (const level of ['L1', 'L2', 'L3', 'L4']) {
-  const all = rows.filter((row) => row.level === level);
-  levels[level] = { passed: all.filter((row) => row.pass).length, total: all.length };
-}
+const timedOut = rows.filter((row) => row.timeout || row.seconds > row.timeLimitSeconds).length;
+const limitsTotal = rows.reduce((sum, row) => sum + row.timeLimitSeconds, 0);
 
 const summary = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   runId: result.runId ?? crypto.randomUUID(),
-  agent: result.agent ?? agentLabel,
+  runType,
+  agent: result.agent ?? 'unknown',
   date: result.date ?? new Date().toISOString().slice(0, 10),
   tasksTotal: rows.length,
   tasksPassed,
   scoreAvg: Math.round(scoreAvg * 10) / 10,
   elapsedSeconds,
-  manualSeconds,
-  timeSavedSeconds,
-  levels,
+  limitsTotal,
+  timedOut,
   tasks: rows,
 };
 
 const summaryPath = path.join(path.dirname(resultPath), 'summary.json');
 fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2) + '\n');
 
-console.log(`通过：${tasksPassed}/${rows.length}`);
+console.log(`轮次：${runType}`);
+console.log(`通过：${tasksPassed}/${rows.length}（超时/超限：${timedOut}）`);
 console.log(`平均分：${summary.scoreAvg}`);
-console.log(`总用时：${elapsedSeconds}s（人工基准 ${manualSeconds}s，净节省 ${timeSavedSeconds}s）`);
-console.log(`级别：L1 ${levels.L1.passed}/${levels.L1.total} · L2 ${levels.L2.passed}/${levels.L2.total} · L3 ${levels.L3.passed}/${levels.L3.total} · L4 ${levels.L4.passed}/${levels.L4.total}`);
+console.log(`总用时：${elapsedSeconds}s / 时限合计 ${limitsTotal}s`);
 console.log(`已写入：${summaryPath}`);
-
-if (wantsSubmission) {
-  const label = String(agentLabel || summary.agent || 'unknown')
-    .replace(/[\r\n\t]/g, ' ')
-    .trim()
-    .slice(0, 40);
-  if (!label || label.includes('@') || /https?:\/\//i.test(label)) {
-    console.error('agentLabel 请使用不含邮箱/网址的简短名字（≤40 字符）');
-    process.exit(1);
-  }
-  const submission = {
-    schemaVersion: 1,
-    runId: crypto.randomUUID(),
-    agentLabel: label,
-    date: new Date().toISOString().slice(0, 10),
-    tasksTotal: rows.length,
-    tasksPassed,
-    scoreAvg: summary.scoreAvg,
-    elapsedSeconds,
-    manualSeconds,
-    timeSavedSeconds,
-    levels,
-    consent: true,
-  };
-  const submissionPath = path.join(path.dirname(resultPath), 'submission.json');
-  fs.writeFileSync(submissionPath, JSON.stringify(submission, null, 2) + '\n');
-  console.log(`\n已生成匿名提交文件：${submissionPath}`);
-  console.log('它只包含分数/用时/级别汇总，不含账号、任务回答、截图或个人信息。');
-  console.log('请打开检查后再按 leaderboard/README.md 提交（PR 或 Issue）。');
-}
+console.log('下一步：cold/warm 都完成后运行 scripts/make-submission.mjs（可选上传）。');

@@ -43,6 +43,17 @@ for (const file of files) {
   if (typeof task.manualMinutes !== 'number' || task.manualMinutes <= 0) {
     errors.push(`${file}: manualMinutes 必须是正数`);
   }
+  if (typeof task.referenceSeconds !== 'number' || task.referenceSeconds <= 0) {
+    errors.push(`${file}: referenceSeconds 必须是正数`);
+  }
+  if (typeof task.timeLimitSeconds !== 'number' || task.timeLimitSeconds <= 0) {
+    errors.push(`${file}: timeLimitSeconds 必须是正数`);
+  } else if (typeof task.referenceSeconds === 'number') {
+    const expected = Math.ceil(task.referenceSeconds * 1.5);
+    if (task.timeLimitSeconds !== expected) {
+      errors.push(`${file}: timeLimitSeconds 应为 ceil(referenceSeconds × 1.5)=${expected}，实际 ${task.timeLimitSeconds}`);
+    }
+  }
   if (task.tools !== undefined && !Array.isArray(task.tools)) {
     errors.push(`${file}: tools 必须是数组`);
   }

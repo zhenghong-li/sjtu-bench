@@ -2,6 +2,8 @@ id: L2-02-wechat-article
 title: 公众号文章搜索与摘要
 level: L2
 manualMinutes: 6
+referenceSeconds: 55
+timeLimitSeconds: 83
 safety: read-only
 tools:
   - wechat_search

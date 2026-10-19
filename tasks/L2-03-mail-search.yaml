@@ -2,6 +2,8 @@ id: L2-03-mail-search
 title: 邮箱搜索与摘要
 level: L2
 manualMinutes: 7
+referenceSeconds: 40
+timeLimitSeconds: 60
 safety: read-only
 tools:
   - mail_search

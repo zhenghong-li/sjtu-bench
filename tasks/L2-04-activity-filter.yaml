@@ -2,6 +2,8 @@ id: L2-04-activity-filter
 title: 活动筛选与冲突检查
 level: L2
 manualMinutes: 5
+referenceSeconds: 35
+timeLimitSeconds: 53
 safety: read-only
 tools:
   - activity_list

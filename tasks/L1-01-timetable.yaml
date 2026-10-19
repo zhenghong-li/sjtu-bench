@@ -2,6 +2,8 @@ id: L1-01-timetable
 title: 今日课表
 level: L1
 manualMinutes: 2
+referenceSeconds: 12
+timeLimitSeconds: 18
 safety: read-only
 tools:
   - timetable_get

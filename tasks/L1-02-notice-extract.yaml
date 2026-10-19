@@ -2,6 +2,8 @@ id: L1-02-notice-extract
 title: 教务通知关键信息
 level: L1
 manualMinutes: 3
+referenceSeconds: 25
+timeLimitSeconds: 38
 safety: read-only
 tools:
   - notice_list

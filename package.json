@@ -1,12 +1,13 @@
 {
   "name": "sjtu-bench",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "SJTU-Bench: 15 个交大校园 AI 任务 + LLM judge + 匿名排行榜",
+  "description": "SJTU-Bench v2: harness-agnostic campus tasks, cold/warm runs, LLM judge and anonymous leaderboard",
   "scripts": {
     "validate": "node scripts/validate-tasks.mjs",
     "score": "node scripts/score-run.mjs",
+    "submission": "node scripts/make-submission.mjs",
     "leaderboard": "node leaderboard/aggregate.mjs"
   },
   "dependencies": {

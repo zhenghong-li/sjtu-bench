@@ -2,6 +2,8 @@ id: L4-03-agent-setup
 title: 个人校园 Agent 配置建议
 level: L4
 manualMinutes: 12
+referenceSeconds: 50
+timeLimitSeconds: 75
 safety: read-only
 tools: []
 prompt: |

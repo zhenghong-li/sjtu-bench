@@ -1,6 +1,6 @@
-# 排行榜提交
+# 排行榜提交（Cold + Warm）
 
-排行榜是**可选**的：不提交不会有任何数据离开你的电脑。
+排行榜是**可选**的；不提交不会有任何数据离开你的电脑。
 
 ## 只接受这些字段
 
@@ -8,22 +8,27 @@
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "runId": "随机 UUID",
-  "agentLabel": "DSH + sjtu-mcp",
+  "agentLabel": "Claude Code + 自建 MCP",
   "date": "2026-10-19",
-  "tasksTotal": 15,
-  "tasksPassed": 13,
-  "scoreAvg": 82.4,
-  "elapsedSeconds": 540,
-  "manualSeconds": 900,
-  "timeSavedSeconds": 360,
-  "levels": {
-    "L1": { "passed": 4, "total": 4 },
-    "L2": { "passed": 4, "total": 4 },
-    "L3": { "passed": 3, "total": 4 },
-    "L4": { "passed": 2, "total": 3 }
+  "benchmarkVersion": "v2",
+  "cold": {
+    "tasksTotal": 15,
+    "tasksPassed": 4,
+    "scoreAvg": 38.2,
+    "elapsedSeconds": 2400,
+    "timedOut": 10
   },
+  "warm": {
+    "tasksTotal": 15,
+    "tasksPassed": 14,
+    "scoreAvg": 82.1,
+    "elapsedSeconds": 540,
+    "timedOut": 0
+  },
+  "timeSavedSeconds": 1860,
+  "speedup": 4.44,
   "consent": true
 }
 ```
@@ -33,10 +38,15 @@
 ## 如何生成
 
 ```powershell
-node scripts/score-run.mjs runs/<runId>/result.json --submission --agent "DSH + sjtu-mcp"
+# 先分别跑 cold / warm，并各自生成 summary.json
+node scripts/score-run.mjs runs/cold/result.json --run-type cold
+node scripts/score-run.mjs runs/warm/result.json --run-type warm
+
+# 再合成匿名提交
+node scripts/make-submission.mjs --cold runs/cold/summary.json --warm runs/warm/summary.json --agent "Claude Code + 自建 MCP"
 ```
 
-会在 `runs/<runId>/submission.json` 生成上面这份文件；先打开检查。
+会在当前目录生成 `submission.json`；先打开检查。
 
 ## 如何提交（二选一）
 
@@ -45,7 +55,7 @@ node scripts/score-run.mjs runs/<runId>/result.json --submission --agent "DSH + 
 1. Fork 本仓库；
 2. 把 `submission.json` 放到 `leaderboard/submissions/<runId>.json`；
 3. 提交 PR，标题 `[leaderboard] <agentLabel>`；
-4. GitHub Action 会自动更新 README 排行榜（无需手动改表）。
+4. GitHub Action 自动更新 README 排行榜。
 
 ### 方式 B：Issue
 
@@ -55,13 +65,13 @@ node scripts/score-run.mjs runs/<runId>/result.json --submission --agent "DSH + 
 
 ## 删除自己的成绩
 
-提 Issue 或 PR，注明 `runId`，即可删除；不会追问原因。
+提 Issue 或 PR，注明 `runId` 即可删除；不会追问原因。
 
 ## 排名规则
 
-- 按 `timeSavedSeconds` 降序；
-- 并列时按 `scoreAvg` 降序；
-- 再并列按 `elapsedSeconds` 升序；
-- 只展示最近 50 条；`unverified` 标记表示尚未人工抽查。
+- 按 `timeSavedSeconds`（cold 用时 − warm 用时）降序；
+- 并列看 `speedup`；
+- 再并列看 `warm.scoreAvg`；
+- 只展示最近 50 条。
 
-> 娱乐榜：LLM 评分和网络环境都会影响结果，请勿当真。
+> 娱乐榜：LLM 评分、cold run 的工具限制、网络环境都会影响结果，请勿当真。
