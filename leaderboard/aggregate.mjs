@@ -79,6 +79,54 @@ function loadSubmissions() {
   return rows;
 }
 
+const LEGACY_KEYS = [
+  'schemaVersion',
+  'runId',
+  'agentLabel',
+  'date',
+  'tasksTotal',
+  'tasksPassed',
+  'scoreAvg',
+  'elapsedSeconds',
+  'manualSeconds',
+  'timeSavedSeconds',
+  'levels',
+  'consent',
+];
+
+function loadLegacy() {
+  const dir = path.join(submissionsDir, 'legacy');
+  if (!fs.existsSync(dir)) return [];
+  const rows = [];
+  for (const file of fs.readdirSync(dir)) {
+    if (!file.endsWith('.json')) continue;
+    let data;
+    try {
+      data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
+    } catch (error) {
+      console.warn(`跳过无法解析的 legacy 提交 ${file}: ${error.message}`);
+      continue;
+    }
+    try {
+      if (data.schemaVersion !== 1) fail(file, 'legacy 提交必须是 schemaVersion 1');
+      for (const key of LEGACY_KEYS) {
+        if (data[key] === undefined) fail(file, `缺少字段 ${key}`);
+      }
+      if (data.consent !== true) fail(file, 'consent 必须为 true');
+      if (typeof data.agentLabel !== 'string' || !data.agentLabel.trim()) fail(file, 'agentLabel 无效');
+      if (/@|https?:\/\//i.test(data.agentLabel)) fail(file, 'agentLabel 不能含邮箱/网址');
+      for (const key of ['tasksTotal', 'tasksPassed', 'elapsedSeconds', 'manualSeconds', 'timeSavedSeconds']) {
+        if (typeof data[key] !== 'number' || data[key] < 0) fail(file, `${key} 无效`);
+      }
+      if (typeof data.scoreAvg !== 'number') fail(file, 'scoreAvg 无效');
+      rows.push(data);
+    } catch (error) {
+      console.warn('跳过 legacy 提交 ' + file + '：' + error.message);
+    }
+  }
+  return rows;
+}
+
 function escapeCell(value) {
   return String(value).replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
 }
@@ -103,6 +151,25 @@ if (rows.length === 0) {
   });
 }
 
+const legacyRows = loadLegacy().sort((a, b) => {
+  if (b.timeSavedSeconds !== a.timeSavedSeconds) return b.timeSavedSeconds - a.timeSavedSeconds;
+  return b.scoreAvg - a.scoreAvg;
+});
+
+const legacyTable = [
+  '| # | Agent | 得分 | 通过 | 用时 | 净节省 | 日期 |',
+  '|---|-------|------|------|------|--------|------|',
+];
+if (legacyRows.length === 0) {
+  legacyTable.push('| — | 暂无单轮提交 | — | — | — | — | — |');
+} else {
+  legacyRows.slice(0, 50).forEach((row, index) => {
+    legacyTable.push(
+      `| ${index + 1} | ${escapeCell(row.agentLabel)} | ${row.scoreAvg.toFixed(1)} | ${row.tasksPassed}/${row.tasksTotal} | ${Math.round(row.elapsedSeconds)}s | ${Math.round(row.timeSavedSeconds)}s | ${escapeCell(row.date)} |`,
+    );
+  });
+}
+
 const startMarker = '<!-- LEADERBOARD:START -->';
 const endMarker = '<!-- LEADERBOARD:END -->';
 const readme = fs.readFileSync(readmePath, 'utf8');
@@ -112,11 +179,27 @@ if (start < 0 || end < 0 || end < start) {
   console.error('README 中找不到排行榜标记 ' + startMarker + ' / ' + endMarker);
   process.exit(1);
 }
-const next =
+let next =
   readme.slice(0, start + startMarker.length) +
   '\n' +
   table.join('\n') +
   '\n' +
   readme.slice(end);
+
+const legacyStartMarker = '<!-- LEGACY_LEADERBOARD:START -->';
+const legacyEndMarker = '<!-- LEGACY_LEADERBOARD:END -->';
+const legacyStart = next.indexOf(legacyStartMarker);
+const legacyEnd = next.indexOf(legacyEndMarker);
+if (legacyStart >= 0 && legacyEnd > legacyStart) {
+  next =
+    next.slice(0, legacyStart + legacyStartMarker.length) +
+    '\n' +
+    legacyTable.join('\n') +
+    '\n' +
+    next.slice(legacyEnd);
+} else {
+  console.warn('README 中找不到 legacy 排行榜标记，跳过 legacy 表格更新');
+}
+
 fs.writeFileSync(readmePath, next);
-console.log(`已更新排行榜：${rows.length} 条提交，展示 ${Math.min(rows.length, 50)} 条`);
+console.log(`已更新排行榜：${rows.length} 条 v2 提交，${legacyRows.length} 条 v1 legacy 提交`);
