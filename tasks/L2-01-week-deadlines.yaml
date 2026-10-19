@@ -5,10 +5,6 @@ manualMinutes: 8
 referenceSeconds: 45
 timeLimitSeconds: 68
 safety: read-only
-tools:
-  - calendar_events
-  - timetable_get
-  - notice_list
 prompt: |
   汇总我未来 7 天的考试、作业 DDL、重要校园事项：
   结合我的日历事件、课表和最近通知，输出按日期排序的清单；
@@ -24,5 +20,3 @@ judge:
     - 每条都有日期和来源标注
     - 没有把普通课程误标为 DDL
     - 未编造事件
-notes: |
-  允许合并工具输出；重点是“不漏项 + 来源可追溯”。

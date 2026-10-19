@@ -20,8 +20,8 @@ body:
     attributes:
       label: 难度级别
       options:
-        - L1（单工具，2 分钟内）
-        - L2（跨工具/跨源）
+        - L1（单点查询，2 分钟内）
+        - L2（跨源整理）
         - L3（多步 + 人工确认）
         - L4（综合/工作流设计）
     validations:
@@ -34,11 +34,6 @@ body:
       placeholder: 读取我今天的课表，按时间排序列出……
     validations:
       required: true
-  - type: input
-    id: tools
-    attributes:
-      label: 允许的工具（逗号分隔）
-      placeholder: timetable_get, calendar_events
   - type: input
     id: minutes
     attributes:

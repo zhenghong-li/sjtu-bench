@@ -5,11 +5,6 @@ manualMinutes: 10
 referenceSeconds: 60
 timeLimitSeconds: 90
 safety: read-only
-tools:
-  - timetable_get
-  - calendar_events
-  - notice_list
-  - shuiyuan_hot
 prompt: |
   生成一份“今日校园简报”，包含 4 个部分：
   1) 今日课程（时间/教室）
@@ -28,5 +23,3 @@ judge:
     - 有优先级/摘要，不是简单堆砌
     - 400 字以内（可略超）
     - 无敏感信息
-notes: |
-  综合任务；允许取舍，但需说明“暂无数据”。

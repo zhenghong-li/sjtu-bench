@@ -10,7 +10,7 @@
 {
   "schemaVersion": 2,
   "runId": "随机 UUID",
-  "agentLabel": "Claude Code + 自建 MCP",
+  "agentLabel": "我的自建工作流 Agent",
   "date": "2026-10-19",
   "benchmarkVersion": "v2",
   "cold": {
@@ -43,7 +43,7 @@ node scripts/score-run.mjs runs/cold/result.json --run-type cold
 node scripts/score-run.mjs runs/warm/result.json --run-type warm
 
 # 再合成匿名提交
-node scripts/make-submission.mjs --cold runs/cold/summary.json --warm runs/warm/summary.json --agent "Claude Code + 自建 MCP"
+node scripts/make-submission.mjs --cold runs/cold/summary.json --warm runs/warm/summary.json --agent "我的自建工作流 Agent"
 ```
 
 会在当前目录生成 `submission.json`；先打开检查。

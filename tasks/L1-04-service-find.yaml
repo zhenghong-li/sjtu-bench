@@ -5,9 +5,6 @@ manualMinutes: 2
 referenceSeconds: 14
 timeLimitSeconds: 21
 safety: read-only
-tools:
-  - services_search
-  - services_catalog
 prompt: |
   在交我办服务目录中分别搜索「成绩单」和「报销」：
   每个关键词给出 1 个最相关事项的名称、所属部门、可用链接。
@@ -20,5 +17,3 @@ judge:
     - 两个关键词都有结果或明确说明无结果
     - 事项名称/部门与目录返回一致
     - 链接可用（是交我办事项页）
-notes: |
-  services_search 返回 id/uri；services_open 可打开页面（只打开，不提交）。

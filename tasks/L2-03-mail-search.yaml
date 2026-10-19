@@ -5,9 +5,6 @@ manualMinutes: 7
 referenceSeconds: 40
 timeLimitSeconds: 60
 safety: read-only
-tools:
-  - mail_search
-  - mail_read
 prompt: |
   在我的邮箱中搜索最近 30 天与「实习」相关的邮件，列出 3 封：
   主题、发件人、日期、一句话摘要。
@@ -22,5 +19,3 @@ judge:
     - 日期/发件人完整
     - 摘要准确且脱敏
     - 没有把敏感信息放进回答
-notes: |
-  若最近 30 天没有“实习”邮件，可换关键词并说明；隐私优先。

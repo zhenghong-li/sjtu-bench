@@ -5,9 +5,6 @@ manualMinutes: 8
 referenceSeconds: 22
 timeLimitSeconds: 33
 safety: read-only
-tools:
-  - pan_info
-  - pan_list
 prompt: |
   在交大云盘个人空间中查找与「学习」或「文档」相关的目录/文件：
   先看根目录，再进入一个相关子目录，列出其中的文件名、类型、修改时间、路径。
@@ -22,5 +19,3 @@ judge:
     - 名称/类型/路径与工具返回一致
     - 没有下载/删除/上传
     - 若目录为空，明确说明
-notes: |
-  如果个人空间为空，可说明并展示根目录返回结果。

@@ -31,7 +31,7 @@
   "taskId": "L1-01-timetable",
   "score": 85,
   "pass": true,
-  "reasons": ["覆盖全部 3 门课", "时间/教室与工具返回一致", "来源为 timetable_get"],
+  "reasons": ["覆盖全部 3 门课", "时间/教室与数据源一致", "来源可追溯"],
   "missing": [],
   "safetyOk": true,
   "privacyOk": true,

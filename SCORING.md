@@ -43,7 +43,7 @@ AND  timeout != true
 | 阶段 | 规则 |
 |---|---|
 | **Cold run** | 不使用任何现成校园专用工具/工作流；只用通用浏览器/shell/文件能力；逐任务计时，超时失败 |
-| **Build** | agent 自己总结卡点、搭建工作流（脚本/MCP/自动化/prompt），记录 build notes（本地） |
+| **Build** | agent 自己总结卡点、搭建工作流（脚本/自定义工具/自动化/prompt），记录 build notes（本地） |
 | **Warm run** | 使用自己搭的工作流，重跑同一批任务；同样计时、同样时限 |
 
 每轮各自计算：
@@ -73,7 +73,7 @@ speedup = cold.elapsedSeconds / warm.elapsedSeconds
 {
   "schemaVersion": 2,
   "runId": "随机 UUID",
-  "agentLabel": "Claude Code + 自建 MCP",
+  "agentLabel": "我的自建工作流 Agent",
   "date": "2026-10-19",
   "benchmarkVersion": "v2",
   "cold": { "tasksTotal": 15, "tasksPassed": 4, "scoreAvg": 38.2, "elapsedSeconds": 2400, "timedOut": 10 },

@@ -5,9 +5,6 @@ manualMinutes: 3
 referenceSeconds: 18
 timeLimitSeconds: 27
 safety: read-only
-tools:
-  - shuiyuan_search
-  - shuiyuan_topic
 prompt: |
   在水源社区搜索关键词「选课」。列出最近 3 个相关帖子：标题、作者（可省略）、回复数/浏览数（若返回）、链接。
   不要进入与任务无关的隐私板块，不要输出帖子中他人的个人信息。
@@ -20,5 +17,3 @@ judge:
     - 返回 3 条真实相关帖子
     - 标题/链接与工具返回一致
     - 没有编造回复数/浏览数
-notes: |
-  shuiyuan_search 可换关键词；shuiyuan_topic 可用来看置顶/热帖。

@@ -1,7 +1,7 @@
 # SJTU-Bench · 交大校园 AI 任务集
 
 > **一个不依赖任何 agent harness 的校园任务挑战**：15 个真实校园目标，先让 agent 直接试、踩坑、超时，再自己搭工作流复跑，看效率到底能提升多少。
-> 不是论文 benchmark，是娱乐 + 启发。**DSH / Claude Code / Codex / Cursor / ChatGPT + 浏览器 / 你自己写的脚本，都能跑。**
+> 不是论文 benchmark，是娱乐 + 启发。**任何能操作浏览器/本机文件的 agent 都能跑，不需要提前装任何东西。**
 
 **⚠️ 先看 [PRIVACY.md](PRIVACY.md)：账号、邮件、课表、发票等数据永远只在本机；排行榜只接受你主动上传的匿名汇总数字。**
 
@@ -10,7 +10,7 @@
 大多数校园 benchmark 直接给 agent 一套现成工具，测的是"工具调用"；这个项目反过来：
 
 1. **Cold run（裸跑）**：agent 只拿到任务目标，用自己已有的通用能力（浏览器、shell、文件、搜索）去试；每任务有**硬时限**，超时直接失败。
-2. **Build（搭工作流）**：跑完一轮后，agent 自己发现哪些步骤又慢又重复，动手写脚本 / MCP / 浏览器自动化 / prompt 工作流。
+2. **Build（搭工作流）**：跑完一轮后，agent 自己发现哪些步骤又慢又重复，动手写脚本 / 自定义工具 / 浏览器自动化 / prompt 工作流。
 3. **Warm run（复跑）**：用自己搭的工作流再跑同一批任务，对比 cold vs warm 的通过率和用时。
 
 **时间预算**：每个任务的 `timeLimitSeconds = referenceSeconds × 1.5`，其中 `referenceSeconds` 是我们用成熟工具跑一遍的用时（写在任务 YAML 里）。超过时限 = 任务失败；这迫使 agent 感受"没有工作流有多慢"，也给出明确的优化目标。
@@ -41,11 +41,11 @@
 
 ## 快速开始（任意 agent）
 
-**不需要安装 DSH，也不需要 `sjtu-mcp`。** 你只需要：
+**不需要提前安装/配置/搭建任何东西。** 你只需要：
 
 1. 把本仓库的 [PROTOCOL.md](PROTOCOL.md) 和 [tasks/](tasks/) 交给你的 agent（或直接把仓库链接发给它）；
 2. agent 按协议先跑 **cold run**：逐任务计时，超过 `timeLimitSeconds` 就记失败；
-3. 跑完后 agent 自己总结卡点、搭建工作流（可选参考 [sjtu-mcp](https://github.com/zhenghong-li/SJTU-Agent) 作为加速器示例，但**不是必需**）；
+3. 跑完后 agent 自己总结卡点、搭建工作流；
 4. 用同一个 agent + 新工作流跑 **warm run**；
 5. 每轮用 LLM judge 本地评分，汇总 cold/warm 成绩；
 6. 可选：生成匿名汇总提交到排行榜。

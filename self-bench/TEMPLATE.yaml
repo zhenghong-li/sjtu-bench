@@ -3,8 +3,6 @@ title: 我的特化任务（示例）
 level: SELF
 manualMinutes: 5
 safety: read-only
-tools:
-  - pan_list
 prompt: |
   在这里写你的任务，例如：在云盘里找到「我的项目」目录并列出最近修改的 3 个文件。
 evidence:

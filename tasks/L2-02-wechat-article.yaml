@@ -5,10 +5,6 @@ manualMinutes: 6
 referenceSeconds: 55
 timeLimitSeconds: 83
 safety: read-only
-tools:
-  - wechat_search
-  - wechat_resolve_url
-  - wechat_read_article
 prompt: |
   搜索微信公众号中与「奖学金」相关的最近文章，选 2 篇，读取正文后输出：
   标题、公众号名、发布时间、3 条要点、原文链接。
@@ -24,5 +20,3 @@ judge:
     - 发布时间/公众号名完整
     - 要点来自正文，不是只看标题猜测
     - 没有编造文章内容
-notes: |
-  搜狗结果可能被反爬；失败时可用往期文章或换关键词，需在回答中说明。
