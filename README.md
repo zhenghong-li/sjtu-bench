@@ -5,6 +5,10 @@
 
 **⚠️ 隐私说明 [PRIVACY.md](PRIVACY.md)：账号、邮件、课表、发票等数据永远只在本机；排行榜只接受你主动上传的匿名汇总数字。**
 
+## 特别致谢
+
+感谢水源 **@Milvoid** 的[《分享个人信息基建和 Agent 设定》](https://shuiyuan.sjtu.edu.cn/t/topic/476017)：其中"只读数据通道 / CLI 化 / 常驻 agent + 消息桥"的思路，直接启发了本 bench 的 Build 阶段和 L4-03 任务，也是我们后续把微信本地公众号 CLI 接进自己工具链的灵感来源。强烈推荐原帖。
+
 ## 为什么不是"又一个意义不明的 agent benchmark"
 
 本Bench分为多个阶段：
