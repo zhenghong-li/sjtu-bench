@@ -49,7 +49,7 @@ AND  timeout != true
 每轮各自计算：
 
 - `tasksPassed` = 通过任务数；
-- `scoreAvg` = 15 个任务 judge 分数的算术平均（保留 1 位小数）；
+- `scoreAvg` = 当前任务数（16）个任务 judge 分数的算术平均（保留 1 位小数）；
 - `elapsedSeconds` = 各任务实际用时之和；
 - `timedOut` = 超时任务数。
 
@@ -76,8 +76,8 @@ speedup = cold.elapsedSeconds / warm.elapsedSeconds
   "agentLabel": "我的自建工作流 Agent",
   "date": "2026-10-19",
   "benchmarkVersion": "v2",
-  "cold": { "tasksTotal": 15, "tasksPassed": 4, "scoreAvg": 38.2, "elapsedSeconds": 2400, "timedOut": 10 },
-  "warm": { "tasksTotal": 15, "tasksPassed": 14, "scoreAvg": 82.1, "elapsedSeconds": 540, "timedOut": 0 },
+  "cold": { "tasksTotal": 16, "tasksPassed": 4, "scoreAvg": 38.2, "elapsedSeconds": 2400, "timedOut": 10 },
+  "warm": { "tasksTotal": 16, "tasksPassed": 15, "scoreAvg": 82.1, "elapsedSeconds": 540, "timedOut": 0 },
   "timeSavedSeconds": 1860,
   "speedup": 4.44,
   "consent": true

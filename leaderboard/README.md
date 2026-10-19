@@ -14,15 +14,15 @@
   "date": "2026-10-19",
   "benchmarkVersion": "v2",
   "cold": {
-    "tasksTotal": 15,
-    "tasksPassed": 4,
+    "tasksTotal": 16,
+    "tasksPassed": 5,
     "scoreAvg": 38.2,
     "elapsedSeconds": 2400,
     "timedOut": 10
   },
   "warm": {
-    "tasksTotal": 15,
-    "tasksPassed": 14,
+    "tasksTotal": 16,
+    "tasksPassed": 15,
     "scoreAvg": 82.1,
     "elapsedSeconds": 540,
     "timedOut": 0
